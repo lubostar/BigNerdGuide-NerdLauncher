@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActivityHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val view = layoutInflater.inflate(android.R.layout.simple_list_item_1,
+            val view = layoutInflater.inflate(android.R.layout.activity_list_item,
                 parent, false)
             return ActivityHolder(view)
         }
@@ -62,6 +63,8 @@ class MainActivity : AppCompatActivity() {
         View.OnClickListener {
 
         private lateinit var resolveInfo: ResolveInfo
+        private var appName: TextView = itemView.findViewById(android.R.id.text1)
+        private var appIcon: ImageView = itemView.findViewById(android.R.id.icon)
 
         init {
             itemView.setOnClickListener(this)
@@ -70,8 +73,10 @@ class MainActivity : AppCompatActivity() {
         fun bindActivity(resolveInfo: ResolveInfo) {
             this.resolveInfo = resolveInfo
             val packageManager = itemView.context.packageManager
-            val appName = resolveInfo.loadLabel(packageManager).toString()
-            (itemView as TextView).text = appName
+
+            itemView.setPadding(40, 30, 0, 60)
+            appName.text = resolveInfo.loadLabel(packageManager).toString()
+            appIcon.setImageDrawable(resolveInfo.loadIcon(packageManager))
         }
 
         override fun onClick(view: View?) {
