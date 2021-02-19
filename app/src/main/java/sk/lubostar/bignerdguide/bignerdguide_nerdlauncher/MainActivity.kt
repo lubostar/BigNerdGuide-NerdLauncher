@@ -58,15 +58,29 @@ class MainActivity : AppCompatActivity() {
         override fun getItemCount() = activities.size
     }
 
-    private class ActivityHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private class ActivityHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
 
         private lateinit var resolveInfo: ResolveInfo
+
+        init {
+            itemView.setOnClickListener(this)
+        }
 
         fun bindActivity(resolveInfo: ResolveInfo) {
             this.resolveInfo = resolveInfo
             val packageManager = itemView.context.packageManager
             val appName = resolveInfo.loadLabel(packageManager).toString()
             (itemView as TextView).text = appName
+        }
+
+        override fun onClick(view: View?) {
+            val activityInfo = resolveInfo.activityInfo
+            val intent = Intent(Intent.ACTION_MAIN).apply {
+                setClassName(activityInfo.applicationInfo.packageName, activityInfo.name)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            view?.context?.startActivity(intent)
         }
     }
 }
